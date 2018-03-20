@@ -55,9 +55,9 @@ public class Conexion {
                linea = br.readLine();
                index = linea.indexOf("=");
                datos.put(linea.substring(0, index-1), linea.substring(index+1));
-            }while(linea != null);
+            }while(!linea.isEmpty());
         }catch(Exception e){
-            System.err.println(e.toString());
+            System.err.println(e.getMessage());
         }finally{
             try {  
                 if(fr != null){

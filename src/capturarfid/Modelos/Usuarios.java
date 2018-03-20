@@ -11,7 +11,8 @@ package capturarfid.Modelos;
  */
 public class Usuarios extends Tabla{
     
-    public Usuarios(String nombreTabla){
+    public Usuarios(String nombreTabla,String llavePrimaria){
         setNombreTabla(nombreTabla);
+        setLlavePrimaria(llavePrimaria);
     }
 }
