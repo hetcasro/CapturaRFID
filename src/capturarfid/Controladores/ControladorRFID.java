@@ -6,6 +6,7 @@
 package capturarfid.Controladores;
 
 import com.fazecast.jSerialComm.SerialPort;
+import com.fazecast.jSerialComm.SerialPortDataListener;
 
 
 
@@ -15,13 +16,26 @@ import com.fazecast.jSerialComm.SerialPort;
  */
 public class ControladorRFID {
     
-    private static SerialPort puerto;
+    private SerialPort puerto;
     
     public ControladorRFID(){
        this.iniciarPuertoSerie();
     }
     
     private void iniciarPuertoSerie(){
-        this.puerto = SerialPort.getCommPorts()[0];
+        this.puerto = SerialPort.getCommPorts()[1];
+        this.puerto.setBaudRate(9600);
+    }
+    
+    public void escuchar(){
+        this.puerto.openPort();
+        while(true){
+           if(this.puerto.bytesAvailable() != 0){
+               byte [] buffer = new byte[this.puerto.bytesAvailable()];
+               this.puerto.readBytes(buffer, buffer.length);
+               String datos = new String(buffer);
+               System.out.print(datos);
+           }
+        }
     }
 }
