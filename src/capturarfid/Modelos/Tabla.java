@@ -117,7 +117,7 @@ public class Tabla {
         }
         String query = columnas.substring(0,columnas.length()-1)+")"+
                      valores.substring(0,valores.length()-1)+")";
-        System.out.println(query);
+ 
         Connection con = Conexion.conectar();
         try {
             Statement sql = con.createStatement();
@@ -126,6 +126,33 @@ public class Tabla {
             Logger.getLogger(Tabla.class.getName()).log(Level.SEVERE, null, ex);
         }finally{
             try {
+                this.columnas.clear();
+                if(con != null){
+                    con.close();  
+                }                       
+            } catch (SQLException ex) {  
+               Logger.getLogger(Tabla.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
+    
+    public void update(Object llavePrimaria){
+        String query = "UPDATE "+this.nombreTabla+" SET ";
+        for(Map.Entry<String,String> entry : this.columnas.entrySet()){
+           query += entry.getKey() + " = " + "'"+entry.getValue()+"',";
+        }
+        query = query.substring(0, query.length() - 1);
+        query += " WHERE "+this.llavePrimaria+" = "+llavePrimaria.toString();
+        
+        Connection con = Conexion.conectar();
+        try {
+            Statement sql = con.createStatement();
+            sql.executeUpdate(query);
+        } catch (SQLException ex) {
+            Logger.getLogger(Tabla.class.getName()).log(Level.SEVERE, null, ex);
+        }finally{
+            try {
+                this.columnas.clear();
                 if(con != null){
                     con.close();  
                 }                       

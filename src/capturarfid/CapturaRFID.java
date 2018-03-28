@@ -5,11 +5,8 @@
  */
 package capturarfid;
 
+import capturarfid.Controladores.ControladorRFID;
 import capturarfid.Modelos.Usuarios;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -21,18 +18,7 @@ public class CapturaRFID {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        Usuarios usuario = new Usuarios("tbl_usuarios","pk_id");
-        usuario.agregar("pk_id", "3");
-        usuario.agregar("nombreUsuario","Paisa");
-        usuario.agregar("fk_programaId","1");
-        usuario.insert();
-        /*try {
-            while(resultado.next()){
-              System.out.println(resultado.getString("nombreUsuario"));
-            }
-        } catch (SQLException ex) {
-            Logger.getLogger(CapturaRFID.class.getName()).log(Level.SEVERE, null, ex);
-        }*/
+       new ControladorRFID();
     }
     
 }
