@@ -5,8 +5,11 @@
  */
 package capturarfid.Controladores;
 
+import Vistas.VistaPrincipal;
+import capturarfid.Modelos.Usuarios;
 import com.fazecast.jSerialComm.SerialPort;
 import com.fazecast.jSerialComm.SerialPortDataListener;
+import com.fazecast.jSerialComm.SerialPortEvent;
 
 
 
@@ -17,25 +20,39 @@ import com.fazecast.jSerialComm.SerialPortDataListener;
 public class ControladorRFID {
     
     private SerialPort puerto;
+    private VistaPrincipal vista;
+    private Usuarios usuario;
     
     public ControladorRFID(){
        this.iniciarPuertoSerie();
+       this.usuario = new Usuarios("tbl_usuarios","pk_id");
+       this.vista = new VistaPrincipal();
+       this.vista.setVisible(true);
     }
     
     private void iniciarPuertoSerie(){
-        this.puerto = SerialPort.getCommPorts()[1];
+        this.puerto = SerialPort.getCommPort("COM4");
         this.puerto.setBaudRate(9600);
-    }
-    
-    public void escuchar(){
         this.puerto.openPort();
-        while(true){
-           if(this.puerto.bytesAvailable() != 0){
-               byte [] buffer = new byte[this.puerto.bytesAvailable()];
-               this.puerto.readBytes(buffer, buffer.length);
-               String datos = new String(buffer);
-               System.out.print(datos);
-           }
-        }
+        this.puerto.addDataListener(new SerialPortDataListener(){
+
+            @Override
+            public int getListeningEvents() {
+                return SerialPort.LISTENING_EVENT_DATA_AVAILABLE;
+            }
+
+            @Override
+            public void serialEvent(SerialPortEvent event) {
+                if(event.getEventType() == SerialPort.LISTENING_EVENT_DATA_AVAILABLE){
+                    byte [] buffer = new byte[puerto.bytesAvailable()];
+                    puerto.readBytes(buffer, buffer.length);
+                    String datos = new String(buffer);
+                    if(datos != null){
+                        vista.setDatos(usuario.datosUsuario(datos));
+                    }   
+                }
+            }
+        
+        });
     }
 }

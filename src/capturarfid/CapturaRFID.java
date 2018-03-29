@@ -6,7 +6,6 @@
 package capturarfid;
 
 import capturarfid.Controladores.ControladorRFID;
-import capturarfid.Modelos.Usuarios;
 
 /**
  *
@@ -18,7 +17,7 @@ public class CapturaRFID {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-       new ControladorRFID().escuchar();
+        new ControladorRFID();  
     }
     
 }
