@@ -5,7 +5,7 @@
  */
 package capturarfid.Controladores;
 
-import Vistas.VistaPrincipal;
+import capturarfid.Vistas.VistaPrincipal;
 import capturarfid.Modelos.Usuarios;
 import com.fazecast.jSerialComm.SerialPort;
 import com.fazecast.jSerialComm.SerialPortDataListener;
