@@ -12,6 +12,7 @@ import com.fazecast.jSerialComm.SerialPortDataListener;
 import com.fazecast.jSerialComm.SerialPortEvent;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -29,7 +30,6 @@ public class ControladorRFID implements Runnable{
     private final int [] trama = {1,9,0,3,4,65,10,68,187};
     
     public ControladorRFID(){
-       System.out.println(trama.length);
        this.iniciarPuertoSerie();
        this.usuario = new Usuarios("tbl_usuarios","pk_id");
        this.vista = new VistaPrincipal();
@@ -37,7 +37,7 @@ public class ControladorRFID implements Runnable{
     }
     
     private void iniciarPuertoSerie(){
-        this.puerto = SerialPort.getCommPort("COM3");
+        this.puerto = SerialPort.getCommPort("COM6");
         this.puerto.setBaudRate(9600);
         this.puerto.openPort();
         /*this.puerto.addDataListener(new SerialPortDataListener(){
@@ -67,7 +67,7 @@ public class ControladorRFID implements Runnable{
         while(true){
             try {
                 this.conectar();
-                Thread.sleep(100);
+                Thread.sleep(500);
                 this.leer();
                 Thread.sleep(500);
             } catch (InterruptedException ex) {
@@ -78,10 +78,12 @@ public class ControladorRFID implements Runnable{
     
     private void conectar(){
         OutputStream out = puerto.getOutputStream();
-        for(byte i=0; i<trama.length; i++){
+        
             try {
-                out.write(trama[i]);
-                Thread.sleep(8);
+                for(byte i=0; i < trama.length; i++){
+                    out.write(trama[i]);
+                    Thread.sleep(8);
+                }
             } catch (IOException | InterruptedException ex) {
                 Logger.getLogger(ControladorRFID.class.getName()).log(Level.SEVERE, null, ex);
             } finally {
@@ -91,15 +93,28 @@ public class ControladorRFID implements Runnable{
                     Logger.getLogger(ControladorRFID.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
-        } 
+         
     }
     
     private void leer(){
         if(puerto.bytesAvailable() > 0){
             byte[] buffer = new byte[puerto.bytesAvailable()];
             puerto.readBytes(buffer,buffer.length);
-            String mensaje = new String(buffer);
-            System.out.println(mensaje);
+            if(buffer.length > 9){
+               System.out.println(tramaAString(buffer));
+            }
+            //System.out.println(Arrays.toString(buffer));
         }
+    }
+    
+    private String tramaAString(byte[] buffer){
+        String id = "";
+        for(byte i=10; i < buffer.length; i++){
+            if(buffer[i] < 0){
+                buffer[i] = (byte)(buffer[i] * (-1));
+            }
+            id += buffer[i];
+        }
+        return id;
     }
 }
