@@ -5,6 +5,7 @@
  */
 package capturarfid.Controladores;
 
+import capturarfid.Modelos.HashRfid;
 import capturarfid.Vistas.VistaPrincipal;
 import capturarfid.Modelos.Usuarios;
 import com.fazecast.jSerialComm.SerialPort;
@@ -13,6 +14,7 @@ import com.fazecast.jSerialComm.SerialPortEvent;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -28,16 +30,18 @@ public class ControladorRFID implements Runnable{
     private VistaPrincipal vista;
     private Usuarios usuario;
     private final int [] trama = {1,9,0,3,4,65,10,68,187};
+    private HashMap session;
     
-    public ControladorRFID(){
+    public ControladorRFID(HashMap session){
+       this.session = session;
        this.iniciarPuertoSerie();
-       this.usuario = new Usuarios("tbl_usuarios","pk_id");
+       this.usuario = new Usuarios("users","card_code");
        this.vista = new VistaPrincipal();
        this.vista.setVisible(true);
     }
     
     private void iniciarPuertoSerie(){
-        this.puerto = SerialPort.getCommPort("COM6");
+        this.puerto = SerialPort.getCommPort("COM5");
         this.puerto.setBaudRate(9600);
         this.puerto.openPort();
         /*this.puerto.addDataListener(new SerialPortDataListener(){
@@ -67,9 +71,9 @@ public class ControladorRFID implements Runnable{
         while(true){
             try {
                 this.conectar();
-                Thread.sleep(500);
+                Thread.sleep(300);
                 this.leer();
-                Thread.sleep(500);
+                Thread.sleep(300);
             } catch (InterruptedException ex) {
                 Logger.getLogger(ControladorRFID.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -92,8 +96,7 @@ public class ControladorRFID implements Runnable{
                 } catch (IOException ex) {
                     Logger.getLogger(ControladorRFID.class.getName()).log(Level.SEVERE, null, ex);
                 }
-            }
-         
+            }   
     }
     
     private void leer(){
@@ -101,9 +104,13 @@ public class ControladorRFID implements Runnable{
             byte[] buffer = new byte[puerto.bytesAvailable()];
             puerto.readBytes(buffer,buffer.length);
             if(buffer.length > 9){
-               System.out.println(tramaAString(buffer));
+               HashMap datos = usuario.datosUsuario(this.tramaAString(buffer));
+               if(!datos.isEmpty()){
+                   this.vista.setDatos(datos);
+               }else{
+                   this.insertar(this.tramaAString(buffer));
+               } 
             }
-            //System.out.println(Arrays.toString(buffer));
         }
     }
     
@@ -115,6 +122,16 @@ public class ControladorRFID implements Runnable{
             }
             id += buffer[i];
         }
+        if(id.length() < 17){
+          id = "0" +id;
+        }
         return id;
+    }
+    
+    private void insertar(String codigo){
+        HashRfid hash = new HashRfid("tbl_listen");
+        hash.agregar("LI_Codigo",codigo);
+        hash.agregar("FK_UsuarioId",session.get("id").toString());
+        hash.insert();
     }
 }

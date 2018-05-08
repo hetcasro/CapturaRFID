@@ -68,7 +68,7 @@ public class VistaPrincipal extends javax.swing.JFrame {
 
         Jlb_nombre.setText("Nombre:");
 
-        Jlb_rol.setText("Cargo:");
+        Jlb_rol.setText("Apellido:");
 
         Jlb_programa.setText("Programa:");
 
@@ -162,13 +162,16 @@ public class VistaPrincipal extends javax.swing.JFrame {
     }
     
     public void setDatos(HashMap datos){
-        ImageIcon icon = new ImageIcon("Imagenes/Usuario.jpg");
-        Icon icono = new ImageIcon(icon.getImage().getScaledInstance(Jlb_imagen.getWidth(), Jlb_imagen.getHeight(), Image.SCALE_DEFAULT));       
-        Jlb_imagen.setIcon( icono );
-        this.Jlb_nombre.setText("Nombre: "+datos.get("nombre"));
-        this.Jlb_programa.setText("Programa: "+datos.get("programa"));
-        this.Jlb_rol.setText("Cargo: "+datos.get("cargo"));
-        this.jlb_sede.setText("Sede: "+datos.get("sede"));
+        if(!datos.isEmpty()){
+            ImageIcon icon = new ImageIcon("Imagenes/Usuario.jpg");
+            Icon icono = new ImageIcon(icon.getImage().getScaledInstance(Jlb_imagen.getWidth(), Jlb_imagen.getHeight(), Image.SCALE_DEFAULT));       
+            Jlb_imagen.setIcon( icono );
+            this.Jlb_nombre.setText("Nombre: "+datos.get("nombre"));
+            this.Jlb_programa.setText("Programa: "+datos.get("programa"));
+            this.Jlb_rol.setText("Apellido: "+datos.get("apellido"));
+            this.jlb_sede.setText("Sede: "+datos.get("sede"));
+        }
+        
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

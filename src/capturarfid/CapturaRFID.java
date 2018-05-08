@@ -6,6 +6,7 @@
 package capturarfid;
 
 import capturarfid.Controladores.ControladorRFID;
+import capturarfid.Vistas.Login;
 
 /**
  *
@@ -17,8 +18,12 @@ public class CapturaRFID {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-       new Thread(new ControladorRFID()).start();
-
+       //new Thread(new ControladorRFID()).start();
+       java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                new Login().setVisible(true);
+            }
+        });
     }
     
 }
