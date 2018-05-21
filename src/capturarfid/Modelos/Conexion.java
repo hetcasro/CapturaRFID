@@ -27,7 +27,7 @@ public class Conexion {
         Connection link = null;
         HashMap datos = leerDatosConexion();
         String controlador = "com.mysql.jdbc.Driver";
-        String url = "jdbc:mysql://localhost:3306/"+datos.get("BASE_DE_DATOS").toString().trim();
+        String url = "jdbc:mysql://sql46.main-hosting.eu:3306/"+datos.get("BASE_DE_DATOS").toString().trim();
         try {
             Class.forName(controlador);
             link = DriverManager.getConnection(url,datos.get("USUARIO").toString().trim(),datos.get("CLAVE").toString().trim()); 
@@ -63,7 +63,7 @@ public class Conexion {
                 if(fr != null){
                     fr.close();    
                 }
-            } catch (IOException ex) {
+            }catch(IOException ex) {
                     Logger.getLogger(Conexion.class.getName()).log(Level.SEVERE, null, ex);
             }  
         }

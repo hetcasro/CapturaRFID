@@ -123,7 +123,7 @@ public class Tabla {
             Statement sql = con.createStatement();
             sql.executeUpdate(query);
         } catch (SQLException ex) {
-            Logger.getLogger(Tabla.class.getName()).log(Level.SEVERE, null, ex);
+            System.err.println(ex.getMessage());
         }finally{
             try {
                 this.columnas.clear();
@@ -131,7 +131,7 @@ public class Tabla {
                     con.close();  
                 }                       
             } catch (SQLException ex) {  
-               Logger.getLogger(Tabla.class.getName()).log(Level.SEVERE, null, ex);
+               System.err.println(ex.getMessage());
             }
         }
     }
